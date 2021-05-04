@@ -33,7 +33,6 @@ class RestController {
             .body(computerInfoDTO)
     }
 
-
     @PostMapping("")
     fun saveComputerInformation(
         @RequestBody computerInfo: ComputerInfo
@@ -43,5 +42,23 @@ class RestController {
 
         return ResponseEntity.accepted()
             .body(computerInfoTemp)
+    }
+
+    @GetMapping("")
+    fun deleteAllComputerInformation(): ResponseEntity.HeadersBuilder<*> {
+
+        computerInfoService.deleteAllComputerInfo()
+
+        return ResponseEntity.noContent()
+    }
+
+    @GetMapping("/{id}")
+    fun deleteComputerInformationWithId(
+        @PathVariable(value = "id") id: Long
+    ): ResponseEntity.HeadersBuilder<*> {
+
+        computerInfoService.deleteComputerInfoWithId(id)
+
+        return ResponseEntity.noContent()
     }
 }

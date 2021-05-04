@@ -23,4 +23,12 @@ class ComputerInfoService {
     fun getComputerInfoWithId(id: Long): Optional<ComputerInfo> {
         return computerInfoRepository.findById(id)
     }
+
+    fun deleteAllComputerInfo(){
+        computerInfoRepository.deleteAll()
+    }
+
+    fun deleteComputerInfoWithId(id: Long){
+        computerInfoRepository.deleteById(id)
+    }
 }
