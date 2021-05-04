@@ -1,4 +1,4 @@
-package com.rasMainServer.raserver.Service
+package com.rasMainServer.raserver.service
 
 import com.rasMainServer.raserver.ComputerInfo
 import com.rasMainServer.raserver.ComputerInfoDTO

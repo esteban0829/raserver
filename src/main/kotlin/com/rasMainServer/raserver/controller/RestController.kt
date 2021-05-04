@@ -1,8 +1,8 @@
-package com.rasMainServer.raserver.Controller
+package com.rasMainServer.raserver.controller
 
 import com.rasMainServer.raserver.ComputerInfo
 import com.rasMainServer.raserver.ComputerInfoDTO
-import com.rasMainServer.raserver.Service.ComputerInfoService
+import com.rasMainServer.raserver.service.ComputerInfoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -44,7 +44,7 @@ class RestController {
             .body(computerInfoTemp)
     }
 
-    @GetMapping("")
+    @DeleteMapping("")
     fun deleteAllComputerInformation(): ResponseEntity.HeadersBuilder<*> {
 
         computerInfoService.deleteAllComputerInfo()
@@ -52,7 +52,7 @@ class RestController {
         return ResponseEntity.noContent()
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
     fun deleteComputerInformationWithId(
         @PathVariable(value = "id") id: Long
     ): ResponseEntity.HeadersBuilder<*> {
