@@ -9,8 +9,8 @@ import javax.persistence.Id
 data class ComputerInfo (
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long? = null,
-
     var ip: String,
+    var osName: String? = null,
     var online: Boolean? = null,
     var temperature: Int? = null,
     var cpuConsumption: Int? = null,
@@ -20,6 +20,7 @@ data class ComputerInfo (
         return ComputerInfoDTO(
             id = id,
             ip = ip,
+            osName = osName,
             online = online,
             temperature = temperature,
             cpuConsumption = cpuConsumption,
