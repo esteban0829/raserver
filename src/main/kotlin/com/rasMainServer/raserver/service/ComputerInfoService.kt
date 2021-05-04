@@ -16,15 +16,16 @@ class ComputerInfoService {
 
         val ip = computerInfo.ip
 
-        val optionalComputerInfo = computerInfoRepository.findByIp(ip)
-        if(optionalComputerInfo.isPresent) {
-            val optComputerInfo =  optionalComputerInfo.get()
-            optComputerInfo.online = computerInfo.online
-            optComputerInfo.osName = computerInfo.osName
-            optComputerInfo.temperature = computerInfo.temperature
-            optComputerInfo.cpuConsumption = computerInfo.cpuConsumption
-            optComputerInfo.ramConsumption = computerInfo.ramConsumption
-            return optComputerInfo.toDTO()
+        val test = computerInfoRepository.findByIp(ip)
+
+        if(test != null){
+            test.online = computerInfo.online
+            test.temperature = computerInfo.temperature
+            test.osName = computerInfo.osName
+            test.cpuConsumption = computerInfo.cpuConsumption
+            test.ramConsumption = computerInfo.ramConsumption
+            computerInfoRepository.save(test)
+            return test.toDTO()
         }else{
             return computerInfoRepository.save(computerInfo).toDTO()
         }

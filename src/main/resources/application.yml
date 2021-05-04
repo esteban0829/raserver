@@ -12,5 +12,5 @@ spring:
           use_jdbc_metadata_defaults: false
         show_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
       generate-ddl: true
