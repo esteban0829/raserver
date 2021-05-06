@@ -16,18 +16,18 @@ class ComputerInfoService {
 
         val ip = computerInfo.ip
 
-        val test = computerInfoRepository.findByIp(ip)
+        val nComputerInfo = computerInfoRepository.findByIp(ip)
 
-        if(test != null){
-            test.online = computerInfo.online
-            test.temperature = computerInfo.temperature
-            test.osName = computerInfo.osName
-            test.cpuConsumption = computerInfo.cpuConsumption
-            test.ramConsumption = computerInfo.ramConsumption
-            computerInfoRepository.save(test)
-            return test.toDTO()
+        return if(nComputerInfo != null){
+            nComputerInfo.online = computerInfo.online
+            nComputerInfo.temperature = computerInfo.temperature
+            nComputerInfo.osName = computerInfo.osName
+            nComputerInfo.cpuConsumption = computerInfo.cpuConsumption
+            nComputerInfo.ramConsumption = computerInfo.ramConsumption
+            computerInfoRepository.save(nComputerInfo)
+            nComputerInfo.toDTO()
         }else{
-            return computerInfoRepository.save(computerInfo).toDTO()
+            computerInfoRepository.save(computerInfo).toDTO()
         }
     }
 
