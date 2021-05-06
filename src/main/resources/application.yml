@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/springboot
     username: "postgres"
-    password: "0000"
+    password: "00000000"
     driverClassName: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -12,5 +12,5 @@ spring:
           use_jdbc_metadata_defaults: false
         show_sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
       generate-ddl: true
