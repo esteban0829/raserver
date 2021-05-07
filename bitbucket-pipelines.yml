@@ -1,0 +1,15 @@
+image: openjdk:8
+
+pipelines:
+  branches:
+    dev:
+      - step:
+          script:
+            - ./gradlew clean
+            - ./gradlew bootRun
+    master:
+      - step:
+          script:
+            - ./gradlew clean
+            - ./gradlew bootRun
+
