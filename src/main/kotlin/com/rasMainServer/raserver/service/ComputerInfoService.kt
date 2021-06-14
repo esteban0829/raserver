@@ -5,6 +5,7 @@ import com.rasMainServer.raserver.ComputerInfoDTO
 import com.rasMainServer.raserver.ComputerInfoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
@@ -12,38 +13,75 @@ class ComputerInfoService {
     @Autowired
     lateinit var computerInfoRepository: ComputerInfoRepository
 
-    fun saveComputerInfo(computerInfo: ComputerInfo): ComputerInfoDTO {
+    @Transactional
+    fun saveComputerInfo(computerInfoDTO: ComputerInfoDTO): ComputerInfoDTO {
 
-        val ip = computerInfo.ip
+        val ip = computerInfoDTO.ip
 
-        val nComputerInfo = computerInfoRepository.findByIp(ip)
+        val isDuplicateIpComputerExist = computerInfoRepository.findByIp(ip)
 
-        return if(nComputerInfo != null){
-            nComputerInfo.online = computerInfo.online
-            nComputerInfo.temperature = computerInfo.temperature
-            nComputerInfo.osName = computerInfo.osName
-            nComputerInfo.cpuConsumption = computerInfo.cpuConsumption
-            nComputerInfo.ramConsumption = computerInfo.ramConsumption
-            computerInfoRepository.save(nComputerInfo)
-            nComputerInfo.toDTO()
+        if(isDuplicateIpComputerExist.isEmpty){
+            return computerInfoRepository.save(computerInfoDTO.toEntity()).toDTO()
         }else{
-            computerInfoRepository.save(computerInfo).toDTO()
+            throw Exception("duplicate ip in database")
         }
+    }
+
+    @Transactional
+    fun patchComputerInfo(computerId: Long, computerInfoDTO: ComputerInfoDTO): ComputerInfoDTO {
+        val computerInfo = computerInfoRepository.findById(computerId)
+            .orElseThrow{ throw Exception("computerInfo with id : ${computerId} doesn't exist") }
+        computerInfo.apply {
+            ip = computerInfoDTO.ip
+            osName = computerInfoDTO.osName
+            online = computerInfoDTO.online
+            boardInfo = computerInfoDTO.boardInfo
+            cpuFreq0 = computerInfoDTO.cpuFreq0
+            cpuFreq1 = computerInfoDTO.cpuFreq1
+            cpuFreq2 = computerInfoDTO.cpuFreq2
+            cpuFreq3 = computerInfoDTO.cpuFreq3
+            cpuTemp = computerInfoDTO.cpuTemp
+            gpuTemp = computerInfoDTO.gpuTemp
+            memTotal = computerInfoDTO.memTotal
+            memFree = computerInfoDTO.memFree
+            swapTotal = computerInfoDTO.swapTotal
+            swapFree = computerInfoDTO.swapFree
+            diskTotal0 = computerInfoDTO.diskTotal0
+            diskUsage0 = computerInfoDTO.diskUsage0
+            ipInfo = computerInfoDTO.ipInfo
+            macAddr = computerInfoDTO.macAddr
+            addrBit = computerInfoDTO.addrBit
+            hostName = computerInfoDTO.hostName
+        }
+
+        return computerInfoRepository.save(computerInfo).toDTO()
+    }
+
+    @Transactional
+    fun deleteAllComputerInfo(){
+        computerInfoRepository.deleteAll()
+    }
+
+    @Transactional
+    fun deleteComputerInfoWithId(id: Long){
+        computerInfoRepository.deleteById(id)
     }
 
     fun getAllComputerInfo(): List<ComputerInfoDTO> {
         return computerInfoRepository.findAll().map { it.toDTO() }
     }
 
-    fun getComputerInfoWithId(id: Long): Optional<ComputerInfo> {
+    fun getComputerInfoWithId(id: Long): ComputerInfoDTO {
         return computerInfoRepository.findById(id)
+            .orElseThrow{ throw Exception("can't find computerInfo with id : $id") }.toDTO()
     }
 
-    fun deleteAllComputerInfo(){
-        computerInfoRepository.deleteAll()
-    }
-
-    fun deleteComputerInfoWithId(id: Long){
-        computerInfoRepository.deleteById(id)
+    fun getComputerInfoWithIp(ip: String): ComputerInfoDTO? {
+        val computerInfo = computerInfoRepository.findByIp(ip)
+        return if (computerInfo.isPresent) {
+            computerInfo.get().toDTO()
+        } else {
+            null
+        }
     }
 }

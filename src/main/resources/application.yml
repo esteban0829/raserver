@@ -16,4 +16,4 @@ spring:
       ddl-auto: update
       generate-ddl: true
 server:
-  port: 80
+  port: 8081

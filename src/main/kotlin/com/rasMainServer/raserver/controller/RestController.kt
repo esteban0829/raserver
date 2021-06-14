@@ -5,12 +5,13 @@ import com.rasMainServer.raserver.ComputerInfoDTO
 import com.rasMainServer.raserver.service.ComputerInfoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
-@RequestMapping("/api/ComputerInfoInformation", produces = ["application/json"])
+@RequestMapping("/api/computerInfo", produces = ["application/json"])
 class RestController {
 
     @Autowired
@@ -25,40 +26,54 @@ class RestController {
     @GetMapping("/{id}")
     fun getComputerInformationWithId(
         @PathVariable(value = "id") id: Long
-    ): ResponseEntity<Optional<ComputerInfo>> {
-
+    ): ResponseEntity<ComputerInfoDTO> {
         val computerInfoDTO = computerInfoService.getComputerInfoWithId(id)
-
         return ResponseEntity.ok()
             .body(computerInfoDTO)
     }
 
+    @Transactional
     @PostMapping("")
     fun saveComputerInformation(
-        @RequestBody computerInfo: ComputerInfo
+        @RequestBody computerInfoDTO: ComputerInfoDTO
     ): ResponseEntity<ComputerInfoDTO> {
-
-        val computerInfoTemp = computerInfoService.saveComputerInfo(computerInfo)
-
-        return ResponseEntity.accepted()
-            .body(computerInfoTemp)
+        return try {
+            ResponseEntity.accepted().body(computerInfoService.saveComputerInfo(computerInfoDTO))
+        }catch (e: Exception){
+            ResponseEntity.badRequest().build()
+        }
     }
 
+    @Transactional
+    @PatchMapping("/{id}")
+    fun patchComputerInformation(
+        @PathVariable(value = "id") computerInfoId: Long,
+        @RequestParam computerInfoDTO: ComputerInfoDTO
+    ): ResponseEntity<ComputerInfoDTO> {
+
+        return ResponseEntity.ok().body(computerInfoService.patchComputerInfo(computerInfoId, computerInfoDTO))
+    }
+
+    @Transactional
     @DeleteMapping("")
-    fun deleteAllComputerInformation(): ResponseEntity.HeadersBuilder<*> {
-
+    fun deleteAllComputerInformation(): ResponseEntity<Any> {
         computerInfoService.deleteAllComputerInfo()
-
-        return ResponseEntity.noContent()
+        return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/{id}")
     fun deleteComputerInformationWithId(
         @PathVariable(value = "id") id: Long
-    ): ResponseEntity.HeadersBuilder<*> {
+    ): ResponseEntity<Any> {
+        return ResponseEntity.noContent().build()
+    }
 
-        computerInfoService.deleteComputerInfoWithId(id)
-
-        return ResponseEntity.noContent()
+    @GetMapping("/withIp")
+    fun getAllComputerInformation(
+        @RequestParam(name = "ip") ip: String
+    ): ResponseEntity<ComputerInfoDTO> {
+        val computerInfoDTO = computerInfoService.getComputerInfoWithIp(ip) ?:
+            return ResponseEntity.noContent().build()
+        return ResponseEntity.ok().body(computerInfoDTO)
     }
 }
